@@ -1,0 +1,122 @@
+﻿@model IEnumerable<CRUDApplication.Models.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-center"><i class="fas fa-comment-profile text-success"></i> Customer Records</h1>
+
+<table class="table table-hover table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Name)
+            </th>
+            <th>
+                Gender
+            </th>
+            <th>
+                State
+            </th>
+            <th>
+                District
+            </th>
+            <th>
+                <a onclick="showInPopup('@Url.Action("AddOrEdit", "Home", null, Context.Request.Scheme)', 'New Customer')" class="btn btn-success text-white">
+                    <i class="fas fa-random"></i> New Customer
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @* GenderId values: 1 = Male, 2 = Female, 3 = Transgender *@
+                    @{
+                        string gender;
+                        switch (item.GenderId)
+                        {
+                            case 1:
+                                gender = "Male";
+                                break;
+                            case 2:
+                                gender = "Female";
+                                break;
+                            case 3:
+                                gender = "Transgender";
+                                break;
+                            default:
+                                gender = "Unknown";
+                                break;
+                        }
+                    }
+                    @gender
+                </td>
+                <td>
+                    @* StateId values: Map StateId to State Name *@
+                    @{
+                        string state;
+                        switch (item.StateId)
+                        {
+                            case 1:
+                                state = "Delhi";
+                                break;
+                            case 2:
+                                state = "Mumbai";
+                                break;
+                            case 3:
+                                state = "Pune";
+                                break;
+                            case 4:
+                                state = "Hyderabad";
+                                break;
+                            default:
+                                state = "Unknown";
+                                break;
+                        }
+                    }
+                    @state
+                </td>
+                <td>
+                    @* DistrictId values: Map DistrictId to District Name *@
+                    @{
+                        string district;
+                        switch (item.DistrictId)
+                        {
+                            case 1:
+                                district = "Delhi District ";
+                                break;
+                            case 2:
+                                district = "Mumbai District ";
+                                break;
+                            case 3:
+                                district = "Pune District ";
+                                break;
+                            case 4:
+                                district = "Hyderabad District ";
+                                break;
+                            default:
+                                district = "Unknown";
+                                break;
+                        }
+                    }
+                    @district
+                </td>
+                <td>
+                    <a onclick="showInPopup('@Url.Action("AddOrEdit", "Home", new { id = item.Id })', 'Update Customer')" class="btn btn-info text-white">
+                        <i class="fas fa-pencil-alt"></i> Edit
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a> |
+                    <form asp-action="Delete" asp-route-id="@item.Id" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
+                        <input type="submit" value="Delete" class="btn btn-danger" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

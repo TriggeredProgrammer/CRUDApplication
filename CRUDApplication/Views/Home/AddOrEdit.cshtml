@@ -1,0 +1,124 @@
+﻿@model CRUDApplication.Models.Customer
+
+@{
+    ViewData["Title"] = "Add new customer";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="AddOrEdit" asp-route-id="@Model.Id" onsubmit="return jQueryAjaxPost(this);" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <!-- Name Field -->
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">#</div>
+                    </div>
+                    <input asp-for="Name" class="form-control" />
+                </div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Gender Radio Buttons -->
+                    <div class="form-group">
+                        <label asp-for="GenderId" class="control-label">Gender</label>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="GenderId" id="male" name="GenderId" value="1" checked />
+                            <label class="form-check-label" for="male">Male</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="GenderId" id="female" name="GenderId" value="2" />
+                            <label class="form-check-label" for="female">Female</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="GenderId" id="transgender" name="GenderId" value="3" />
+                            <label class="form-check-label" for="transgender">Transgender</label>
+                        </div>
+
+                        <span asp-validation-for="GenderId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- State Dropdown -->
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label asp-for="StateId" class="control-label">State</label>
+                        <select asp-for="StateId" id="stateDropdown" class="form-control" onchange="updateDistricts()">
+                            <option value="">Select State</option>
+                            <option value="1">Delhi</option>
+                            <option value="2">Mumbai</option>
+                            <option value="3">Pune</option>
+                            <option value="4">Hyderabad</option>
+                        </select>
+                        <span asp-validation-for="StateId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- District Dropdown -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label asp-for="DistrictId" class="control-label">District</label>
+                        <select asp-for="DistrictId" id="districtDropdown" class="form-control">
+                            <!-- District options will be dynamically loaded based on state selection -->
+                        </select>
+                        <span asp-validation-for="DistrictId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary btn-block" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    // Object holding district values for each state
+    const districts = {
+        1: ["Delhi District 1", "Delhi District 2", "Delhi District 3", "Delhi District 4"],  // Delhi
+        2: ["Mumbai District 1", "Mumbai District 2", "Mumbai District 3", "Mumbai District 4"],  // Mumbai
+        3: ["Pune District 1", "Pune District 2", "Pune District 3", "Pune District 4"],  // Pune
+        4: ["Hyderabad District 1", "Hyderabad District 2", "Hyderabad District 3", "Hyderabad District 4"]   // Hyderabad
+    };
+
+    // Function to update the district dropdown based on selected state
+    function updateDistricts() {
+        const stateId = document.getElementById("stateDropdown").value;
+        const districtDropdown = document.getElementById("districtDropdown");
+
+        // Clear existing options
+        districtDropdown.innerHTML = "";
+
+        // Check if the selected state exists in districts object
+        if (districts[stateId]) {
+            // Populate district dropdown based on selected state
+            districts[stateId].forEach((district, index) => {
+                const option = document.createElement("option");
+                option.value = index + 1; // District ID as value
+                option.text = district;
+                districtDropdown.appendChild(option);
+            });
+        }
+    }
+
+    // Initialize districts based on the default selected state when the page loads
+    window.onload = function () {
+        updateDistricts();
+    };
+</script>
